@@ -1,5 +1,5 @@
 import React from 'react'
-import Navbar from 'funuicss/component/Navbar'
+import Navbar from 'funuicss/component/NavBar'
 import Typography from 'funuicss/component/Typography'
 import SidebarTrigger from 'funuicss/component/SidebarTrigger'
 import LinkWrapper from 'funuicss/component/LinkWrapper'
