@@ -1,0 +1,20 @@
+/* Navbar */
+.side_bar{
+  width: 200px;
+  padding: 1rem;
+  position: fixed;
+  top: 50px;
+  left: 0;
+  height: calc(100vh - 60px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.content{
+  width: calc(100% - 200px);
+  padding: 70px  10%;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
