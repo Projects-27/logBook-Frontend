@@ -86,6 +86,7 @@ if(date && activity){
             setinfo(true)
             setmessage("Data Inserted")
             setmodal2(false)
+            setlogs('')
         }else{
             setinfo(true)
             setmessage(doc.message)
