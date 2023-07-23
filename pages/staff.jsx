@@ -68,13 +68,10 @@ isOnline()
 const handleLog = ()=>{
 const date = FunGet.val(".date")
 const activity = FunGet.val(".activity")
-const title = FunGet.val(".title")
 const data = {
     Date: date,
     Activity: activity,
-    StudentID: me.id ,
-    matric_number:me.MatrixNumber,
-    title:title
+    StudentID: me.id
 }
 
 if(date && activity){
@@ -125,8 +122,6 @@ maxWidth="400px"
 <CloseModal  onClick={()=>setmodal2(false)}/>
 </ModalHeader>
 <ModalContent>
-<Input label="Title" type='text' bordered fullWidth funcss="title" />
-<Section />
 <Input label="Date" type='date' bordered fullWidth funcss="date" />
 <Section />
 <Input 
@@ -157,7 +152,7 @@ backdrop
 maxWidth="500px"
 >
 <ModalHeader funcss='h5'>
-{editDoc.title}
+  Iddisah Yakubu
 </ModalHeader>
 <ModalContent funcss="padding-20">
 <RowFlex justify='space-between'>
@@ -182,8 +177,15 @@ maxWidth="500px"
 </ModalContent>
 <ModalAction funcss="text-right light bottomEdge padding-20">
 <Button 
+bg="success"
+outlined
+text="Cancel"
+rounded
+onClick={()=>seteditModal(false)}
+/>
+<Button 
 bg="light-danger"
-text="Close"
+text="Deactivate"
 rounded
 onClick={()=>seteditModal(false)}
 />
@@ -207,22 +209,22 @@ onClick={()=>seteditModal(false)}
               <RowFlex justify='space-between'>
                 <Div>
                 <Typography
-                text="Log Book"
+                text="Staff"
                 heading='h4'
                 lighter
                 />
                 <br />
                 <Typography
-                text="Create and manage all your logs"
+                text="Create and manage all your staffs"
                 />
                 </Div>
                 <Div>
                     <Button
-                    text="Create Log"
+                    text="New Staff"
                     bg='primary'
                     startIcon={<Icon icon="bx bx-plus" />}
                     onClick={()=>setmodal2(true)}
-
+                    rounded
                     />
                 </Div>
               </RowFlex>
@@ -248,7 +250,7 @@ onClick={()=>seteditModal(false)}
                .filter(fDoc =>{
                  if(!search){
                      return logs
-                 }else if(search.toString().includes(fDoc.matric_number.slice(0 , search.length))){
+                 }else if(search.toString().includes(fDoc.MatrixNumber.slice(0 , search.length))){
                          return fDoc
                  }
                }).length
@@ -259,8 +261,8 @@ onClick={()=>seteditModal(false)}
       </div>
       <Table  stripped >
        <TableHead>
-           <TableData>Matric number</TableData>
-           <TableData>Title</TableData>
+           <TableData>Sudent ID</TableData>
+           <TableData>Activity</TableData>
            <TableData>Date</TableData>
            <TableData>Edit</TableData>
        </TableHead>
@@ -269,13 +271,13 @@ onClick={()=>seteditModal(false)}
       logs  .filter(fDoc =>{
         if(!search){
             return logs
-        }else if(search.toString().includes(fDoc.matric_number.slice(0 , search.length))){
+        }else if(search.toString().includes(fDoc.MatrixNumber.slice(0 , search.length))){
                 return fDoc
         }
       }).map(doc=>(
         <TableRow key={doc.id}>
-        <TableData>{doc.matric_number ? doc.matric_number : ''}</TableData>
-        <TableData>{doc.title.slice(0, doc.title.indexOf('.'))}</TableData>
+        <TableData>{doc.StudentID}</TableData>
+        <TableData>{doc.Activity.slice(0, doc.Activity.indexOf('.'))}</TableData>
         <TableData>{doc.Date}</TableData>
         <TableData>
           <Button bg='light-success' small rounded startIcon={<Icon icon="far fa-edit"  />}

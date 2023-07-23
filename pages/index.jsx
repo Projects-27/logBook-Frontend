@@ -9,6 +9,7 @@ import Button from 'funuicss/component/Button'
 import Icon from 'funuicss/component/Icon'
 import IconicInput from 'funuicss/component/IconicInput'
 import Typography from 'funuicss/component/Typography'
+import FunLoader from 'funuicss/component/FunLoader'
 import {EndPoint} from '../components/EndPoint'
 import {FunRequest , FunGet} from 'funuicss/js/Fun'
 import Alert from 'funuicss/component/Alert'
@@ -22,8 +23,7 @@ export default function Home() {
     setTimeout(()=>{
       setinfo(false)
       setmessage('')
-      setloading(false)
-    },3000)
+    },5000)
   
     return () => {
       clearTimeout()
@@ -47,6 +47,7 @@ export default function Home() {
      if(data.status == 'error'){
       setinfo(true)
       setmessage('Invalid Matric or Password')
+      setloading(false)
      }else{
       localStorage.setItem('user', JSON.stringify(data.data));
        window.location.href="/user";
@@ -55,6 +56,7 @@ export default function Home() {
     .catch(err=>{
       setinfo(true)
   setmessage(err.message)
+  setloading(false)
     })
  }
  else{
@@ -65,13 +67,13 @@ export default function Home() {
   return (
     <div className='fit central' style={{minHeight:"100vh"}}>
       {
-        loading ?
-        <Alert message={message} fixed="top-middle" type="success" isLoading />
-        : info ? 
-        <Alert message={message} fixed="top-middle" type="info" />
-        :''
+        loading &&
+        <FunLoader size='70px' fixed backdrop />
       }
-      <div style={{
+      { info &&
+        <Alert message={message} fixed="top-middle" type="info" />
+      }
+      <div style={{ 
         maxWidth:'300px',
         width:"100%"
       }}>
