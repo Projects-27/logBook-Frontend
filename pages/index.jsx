@@ -43,10 +43,9 @@ export default function Home() {
     MatrixNumber: matric,
     Password: password,
     }).then((data)=>{
-      console.log(data)
      if(data.status == 'error'){
       setinfo(true)
-      setmessage('Invalid Matric or Password')
+      setmessage(data.message.toString())
       setloading(false)
      }else{
       localStorage.setItem('user', JSON.stringify(data.data));

@@ -14,10 +14,32 @@ import {FunRequest , FunGet} from 'funuicss/js/Fun'
 import Alert from 'funuicss/component/Alert'
 import { useState } from 'react'
 import { useEffect } from 'react'
+import Axios from 'axios'
+import FunLoader from 'funuicss/component/FunLoader';
 export default function Register() {
   const [loading, setloading] = useState(false)
   const [info, setinfo] = useState(false)
   const [message, setmessage] = useState('')
+  const [supervisors, setsupervisors] = useState('')
+
+  useEffect(() => {
+    if(!supervisors){
+      FunRequest.get(EndPoint + "/all/admins" )
+    .then(rdoc=>{
+     setsupervisors(
+      rdoc.data.filter(f=>{
+        if(f.role == 'supervisor'){
+          return f
+        }
+      })
+      )
+    })
+    .catch(()=>{
+
+    })
+    }
+  })
+  
   useEffect(() => {
     setTimeout(()=>{
       setinfo(false)
@@ -38,9 +60,11 @@ export default function Register() {
     const username = FunGet.val(".username")
     const level = FunGet.val(".level")
     const department = FunGet.val(".department")
+    const internal_supervisor = FunGet.val(".internal_supervisor")
     const institution_supervisor = FunGet.val(".institution_supervisor")
     const institution_name = FunGet.val(".institution_name")
     const institution_number = FunGet.val(".institution_number")
+    const institution_address = FunGet.val(".institution_address")
     const data = {
       UserName: username,
       MatrixNumber:matric,
@@ -48,13 +72,14 @@ export default function Register() {
       Password:password,
       Level:level,
       Department:department,
-      InstitutionName:institution_name,
-      InstitutionNumber:institution_number,
-      InstitutionSupervisor:institution_supervisor,
-      InstitutionAddress:password,
-      SchoolSupervisor:password
+      organization:{
+        name:institution_name,
+        contact:institution_number,
+        supervisor:institution_supervisor,
+        address:institution_address,
+      },
+      internal_supervisor:JSON.parse(internal_supervisor)
     }
-    console.log(data)
  if(matric &&
    password && 
    username && 
@@ -62,7 +87,9 @@ export default function Register() {
    department && 
    institution_name && 
    institution_number &&
-   institution_supervisor
+   institution_supervisor &&
+   institution_address 
+
    ){
   setloading(true)
   setmessage("Login: please wait")
@@ -92,16 +119,16 @@ export default function Register() {
     <div className='fit central' style={{minHeight:"100vh"}}>
       {
         loading ?
-        <Alert message={message} fixed="top-middle" type="success" isLoading />
+        <FunLoader size='60px' fixed/>
         : info ? 
         <Alert message={message} fixed="top-middle" type="info" />
         :''
       }
       <div style={{
-        maxWidth:'400px',
+        maxWidth:'450px',
         width:"100%"
       }}>
-      <div className="padding-bottom-20">
+      <div className=" padding-top-50">
     <div className="padding">
     <Typography
         text="New Student Account"
@@ -116,38 +143,53 @@ export default function Register() {
     </div>
       </div>
      <div className="row">
+     <div className="col sm-12 md-12 lg-12 padding">
+      
+      </div>
         <div className="col sm-12 md-6 lg-6 padding">
-        <Input bordered type="text" label="Full Name" funcss="username" fullWidth />
+        <Input rounded bordered type="text" label="Full Name" funcss="username" fullWidth />
         </div>
         <div className="col sm-12 md-6 lg-6 padding">
-        <Input bordered type="text" label="Matric" funcss="matric" fullWidth />
+        <Input rounded bordered type="text" label="Matric" funcss="matric" fullWidth />
         </div>
         <div className="col sm-12 md-6 lg-6 padding">
-        <Input bordered type="text" label="Contact" funcss="contact" fullWidth />
+        <Input rounded bordered type="text" label="Contact" funcss="contact" fullWidth />
         </div>
         <div className="col sm-12 md-6 lg-6 padding">
-        <Input bordered type="text" label="Level" funcss="level" fullWidth />
-        </div>
-        <div className="col sm-12 md-6 lg-6 padding">
-        <Input bordered type="text" label="Department" funcss="department" fullWidth />
-        </div>
-        <div className="col sm-12 md-6 lg-6 padding">
-        <Input bordered type="text" label="Institution Name" funcss="institution_name" fullWidth />
-        </div>
-        <div className="col sm-12 md-6 lg-6 padding">
-        <Input bordered type="text" label="Institution Supervisor" funcss="institution_supervisor" fullWidth />
-        </div>
-        <div className="col sm-12 md-6 lg-6 padding">
-        <Input bordered type="text" label="Inst Supervisor's Contact" funcss="institution_number" fullWidth />
-        </div>
-        <div className="col sm-12 md-6 lg-6 padding">
-        <Input bordered type="text" label="Inst Address" funcss="institution_address" fullWidth />
-        </div>
-        <div className="col sm-12 md-6 lg-6 padding">
-        <Input bordered type="text" label="School Supervisor" funcss="school_supervisor" fullWidth />
+        <Input rounded bordered type="text" label="Level" funcss="level" fullWidth />
         </div>
         <div className="col sm-12 md-12 lg-12 padding">
-        <Input bordered type="password" label="Password" funcss="password" fullWidth />
+        <Input rounded bordered type="text" label="Department" funcss="department" fullWidth />
+        </div>
+        <div className="col sm-12 md-12 lg-12 padding">
+        <select className="input borderedInput internal_supervisor fit" fullWidth style={{borderRadius:'3rem'}}>
+          <option value="">Select Supervisor</option>
+          {
+            supervisors && 
+            supervisors.map(doc=>(
+              <option value={JSON.stringify(doc)} key={doc.Name}>{doc.Name}</option>
+            ))
+          }
+          </select>
+        </div>
+        <div className="col sm-12 md-12 lg-12 padding h4 margin-top-20">
+          Organization
+        </div>
+        <div className="col sm-12 md-12 lg-12 padding">
+        <Input rounded bordered type="text" label="Name" funcss="institution_name" fullWidth />
+        </div>
+        <div className="col sm-12 md-6 lg-6 padding">
+        <Input rounded bordered type="text" label="Contact" funcss="institution_number" fullWidth />
+        </div>
+        <div className="col sm-12 md-6 lg-6 padding">
+        <Input rounded bordered type="text" label="Address" funcss="institution_address" fullWidth />
+        </div>
+        <div className="col sm-12 md-12 lg-12 padding">
+        <Input rounded bordered type="text" label="Supervisor" funcss="institution_supervisor" fullWidth />
+        </div>
+        
+        <div className="col sm-12 md-12 lg-12 padding">
+        <Input rounded bordered type="password" label="Password" funcss="password" fullWidth />
         </div>
         <div className="col sm-12 md-12 lg-12 padding">
         <Button
@@ -155,6 +197,7 @@ export default function Register() {
      bg='primary'
      fullWidth
      onClick={Submit}
+     rounded
      />
         </div>
      </div>

@@ -275,7 +275,7 @@ onClick={()=>seteditModal(false)}
         <TableData>{doc.UserName}</TableData>
         <TableData>{doc.Level}</TableData>
         <TableData>{doc.Department}</TableData>
-        <TableData>{doc.InstitutionName}</TableData>
+        <TableData>{doc.organization.name}</TableData>
         <TableData>
           <Button bg='light-success' small rounded startIcon={<Icon icon="far fa-edit"  />}
           onClick={()=>HandleModal(doc)}
