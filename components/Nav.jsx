@@ -69,11 +69,11 @@ useEffect(() => {
         <Button fullWidth funcss='text-left' startIcon={<Icon icon="bx bx-user" />} text="Profile" />
         </ListItem>
       </Link>
-      {/* <Link href={'/staff'}>
+      <Link href={'/staff'}>
       <ListItem>
-        <Button fullWidth funcss='text-left' startIcon={<Icon icon="bx bx-user" />} text="Add Staff" />
+        <Button fullWidth funcss='text-left' startIcon={<Icon icon="bx bx-user" />} text="Staffs" />
         </ListItem>
-      </Link> */}
+      </Link>
       <Link href={'/dashboard'}>
       <ListItem>
         <Button fullWidth funcss='text-left' startIcon={<Icon icon="bx bx-chart" />} text="DashBoard" />

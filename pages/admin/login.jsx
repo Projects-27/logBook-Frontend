@@ -14,6 +14,7 @@ import {FunRequest , FunGet} from 'funuicss/js/Fun'
 import Alert from 'funuicss/component/Alert'
 import { useState } from 'react'
 import { useEffect } from 'react'
+import FunLoader from 'funuicss/component/FunLoader';
 export default function Home() {
   const [loading, setloading] = useState(false)
   const [info, setinfo] = useState(false)
@@ -23,12 +24,12 @@ export default function Home() {
       setinfo(false)
       setmessage('')
       setloading(false)
-    },3000)
+    },5000)
   
     return () => {
       clearTimeout()
     }
-  }, [loading , info])
+  }, [info])
   
   const Submit = ()=>{
     setloading(false)
@@ -37,13 +38,22 @@ export default function Home() {
     const password = FunGet.val(".password")
  if(email && password){
   setloading(true)
-  setmessage("Loagin: please wait")
-  FunRequest.post(EndPoint + '/userlogin' , 
+  FunRequest.post(EndPoint + '/adminlogin' , 
   {
     Email: email,
     Password: password,
     }).then((data)=>{
-      console.log(data)
+      setloading(false)
+     if(data.status == 'error'){
+      setinfo(true)
+      setmessage(data.message)
+     }else{
+     new Promise((resolve, reject) => {
+      localStorage.setItem('user' , JSON.stringify(data))
+      resolve();
+     })
+     .then(()=> window.location.assign('/dashboard'))
+     }
     })
     .catch(err=>{
       setinfo(true)
@@ -58,11 +68,13 @@ export default function Home() {
   return (
     <div className='fit central' style={{minHeight:"100vh"}}>
       {
-        loading ?
-        <Alert message={message} fixed="top-middle" type="success" isLoading />
-        : info ? 
+    info ? 
         <Alert message={message} fixed="top-middle" type="info" />
         :''
+      }
+      {
+        loading ?
+        <FunLoader size='65px' fixed/>:''
       }
       <div style={{
         maxWidth:'300px',
@@ -84,7 +96,7 @@ export default function Home() {
     funcss="section full-width" 
     position="left" 
     icon={ <Icon icon="bx bx-envelope" color="primary" />}
-    input={<Input type="text" label="Email" funcss="full-width email" bordered />}
+    input={<Input type="text" label="Email" funcss="full-width email" bordered  />}
      />
       <IconicInput 
     funcss="section full-width" 
@@ -98,9 +110,7 @@ export default function Home() {
      fullWidth
      onClick={Submit}
      />
-     <div className='padding-top-20 text-center'>
-      Or <br /> <Link href='/register'>Register Account</Link>
-     </div>
+     
       </div>
     </div>
   )

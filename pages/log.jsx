@@ -155,17 +155,18 @@ animation="ScaleUp"
 duration={0.4} 
 open={editModal}
 backdrop
-maxWidth="500px"
+maxWidth="900px"
 >
 <ModalHeader funcss='h5'>
 {editDoc.title}
 </ModalHeader>
 <ModalContent funcss="padding-20">
+<div className="width-500-max center">
 <RowFlex justify='space-between'>
   <Div>
-  <Typography italic size='small' color='primary'>Student Id</Typography> 
+  <Typography italic size='small' color='primary'>Matric</Typography> 
  <div />
- <Typography>{editDoc.StudentID}</Typography>
+ <Typography>{editDoc.matric_number}</Typography>
   </Div>
   <Div>
   <Typography italic size='small' color='primary'>Date</Typography> 
@@ -176,10 +177,11 @@ maxWidth="500px"
 </RowFlex>
 <p>
 <Typography italic size='small' color='primary'>Activity</Typography> 
-   <Div funcss='border padding round-edge'>
+   <Div funcss='border padding round-edge article text-secondary'>
     {editDoc.Activity}
     </Div>
   </p>
+</div>
 </ModalContent>
 <ModalAction funcss="text-right light bottomEdge padding-20">
 <Button 

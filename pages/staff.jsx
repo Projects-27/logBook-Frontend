@@ -26,6 +26,7 @@ import Table from 'funuicss/component/Table'
 import TableHead from 'funuicss/component/TableHead'
 import TableData from 'funuicss/component/TableData'
 import TableRow from 'funuicss/component/TableRow'
+import  FunLoader from 'funuicss/component/FunLoader';
 
 
 export default function Log() {
@@ -34,15 +35,15 @@ export default function Log() {
     const [loading, setloading] = useState(false)
     const [info, setinfo] = useState(false)
     const [message, setmessage] = useState('')
-    const [logs, setlogs] = useState('')
+    const [staffs, setstaffs] = useState('')
     const [deleteModal, setdeleteModal] = useState(false)
     const [editModal, seteditModal] = useState(false)
     const [search, setsearch] = useState('')
     useEffect(() => {
-     if(!logs && me.id){
-        Axios.get(EndPoint + "/all/logs" )
+     if(!staffs && me.id){
+        Axios.get(EndPoint + "/all/admins" )
         .then(data=>{
-         setlogs(data.data.data)
+         setstaffs(data.data.data)
         }).catch(err=>console.log(err))
      }
     })
@@ -52,7 +53,7 @@ export default function Log() {
           setinfo(false)
           setmessage('')
           setloading(false)
-        },3000)
+        },5000)
       
         return () => {
           clearTimeout()
@@ -65,30 +66,48 @@ isOnline()
 })
 }, [])
 
-const handleLog = ()=>{
-const date = FunGet.val(".date")
-const activity = FunGet.val(".activity")
+const Submit = ()=>{
+const email = FunGet.val(".email")
+const full_name = FunGet.val(".full_name")
+const contact = FunGet.val(".contact")
+const role = FunGet.val(".role")
+const password = FunGet.val(".password")
+const department = FunGet.val(".department")
 const data = {
-    Date: date,
-    Activity: activity,
-    StudentID: me.id
+    Email: email,
+    Name: full_name,
+    contact: contact,
+    role: role,
+    Password: password,
+    Department:department
 }
 
-if(date && activity){
+if(
+  email && 
+  full_name && 
+  contact && 
+  role && 
+  password &&
+  department
+  
+  ){
     setmodal2(false)
     setloading(true)
-    setmessage("Creating Log: Please wait...")
-    FunRequest.post(EndPoint + '/log', data).then((doc)=>{
+    FunRequest.post(EndPoint + '/register/admin', data).then((doc)=>{
         if(doc.status == "ok"){
             setinfo(true)
-            setmessage("Data Inserted")
+            setmessage("user created succesfully")
             setmodal2(false)
+            setstaffs('')
         }else{
             setinfo(true)
             setmessage(doc.message)
         }
     })
-      .catch(err=>alert(err))
+      .catch(err=>{
+        setinfo(true)
+        setmessage(doc.message)
+      })
 }else{
 setinfo(true)
 setmessage("Enter all details")
@@ -105,7 +124,7 @@ seteditModal(true)
     <div className='content'>
           {
         loading ?
-        <Alert message={message} fixed="top-middle" type="success" isLoading />
+        <FunLoader size='60px' fixed/>
         : info ? 
         <Alert message={message} fixed="top-middle" type="info" />
         :''
@@ -115,31 +134,60 @@ animation="ScaleUp"
 duration={0.4} 
 open={modal2}
 backdrop
-maxWidth="400px"
+maxWidth="900px"
 >
 <ModalHeader>
-<Typography text="Create/Edit Log" heading="h5"/>
+<Typography text="Add Admin" heading="h5"/>
 <CloseModal  onClick={()=>setmodal2(false)}/>
 </ModalHeader>
 <ModalContent>
-<Input label="Date" type='date' bordered fullWidth funcss="date" />
+<div className="width-500-max center">
+  <div className="row">
+    <div className="col sm-12 md-6 lg-6 padding">
+    <Input rounded label="Email" type='email' bordered fullWidth funcss="email" />
+    </div>
+    <div className="col sm-12 md-6 lg-6 padding">
+    <Input rounded label="Full Name" type='text' bordered fullWidth funcss="full_name" />
+    </div>
+    <div className="col sm-12 md-6 lg-6 padding">
+    <Input rounded label="Contact" type='tel' bordered fullWidth funcss="contact" />
+    </div>
+    <div className="col sm-12 md-6 lg-6 padding">
+    <Input rounded  bordered fullWidth funcss="role"     select
+    options={[
+     {
+         value:"",
+         text:"-- Role --"
+     },
+     {
+         value:"super",
+         text:"Super Admin"
+     },
+     {
+         value:"supervisor",
+         text:"Supervisor"
+     }
+    ]}/>
+    </div>
+    <div className="col sm-12 md-12 lg-12 padding">
+    <Input rounded label="Password" type='password' bordered fullWidth funcss="password" />
+    </div>
+    <div className="col sm-12 md-12 lg-12 padding">
+    <Input rounded label="Department" type='text' bordered fullWidth funcss="department" />
+    </div>
+  </div>
+
 <Section />
-<Input 
-label="Activity"
- bordered
-  fullWidth
-  multiline
-  funcss='activity'
-  rows={5}
- />
-<Section />
-<Section />
+<div className="padding">
 <Button
 text="Submit"
 bg="primary"
 fullWidth
-onClick={handleLog}
+onClick={Submit}
+rounded
 />
+</div>
+</div>
 </ModalContent>
 </Modal>
 
@@ -234,7 +282,7 @@ onClick={()=>seteditModal(false)}
       <Div funcss="card text-small round-edge margin-top-30">
       <div className="padding hr">
       <RowFlex justify='space-between'>
-      <Input label="Matric Number" onChange={(e)=>setsearch(e.target.value)} bordered rounded/>
+      <Input rounded label="Email" onChange={(e)=>setsearch(e.target.value)} bordered />
       <div>
         <Typography
         text='records'
@@ -245,12 +293,12 @@ onClick={()=>seteditModal(false)}
         <div className='h2'>
             
         {
-            logs &&
-               logs
+            staffs &&
+               staffs
                .filter(fDoc =>{
                  if(!search){
-                     return logs
-                 }else if(search.toString().includes(fDoc.MatrixNumber.slice(0 , search.length))){
+                     return staffs
+                 }else if(search.toString().includes(fDoc.Email.slice(0 , search.length))){
                          return fDoc
                  }
                }).length
@@ -261,30 +309,32 @@ onClick={()=>seteditModal(false)}
       </div>
       <Table  stripped >
        <TableHead>
-           <TableData>Sudent ID</TableData>
-           <TableData>Activity</TableData>
-           <TableData>Date</TableData>
+           <TableData>Email</TableData>
+           <TableData>Full Name</TableData>
+           <TableData>Contact</TableData>
+           <TableData>Role</TableData>
            <TableData>Edit</TableData>
        </TableHead>
      {
-      logs &&
-      logs  .filter(fDoc =>{
+      staffs &&
+      staffs  .filter(fDoc =>{
         if(!search){
-            return logs
-        }else if(search.toString().includes(fDoc.MatrixNumber.slice(0 , search.length))){
+            return staffs
+        }else if(search.toString().includes(fDoc.Email.slice(0 , search.length))){
                 return fDoc
         }
       }).map(doc=>(
         <TableRow key={doc.id}>
-        <TableData>{doc.StudentID}</TableData>
-        <TableData>{doc.Activity.slice(0, doc.Activity.indexOf('.'))}</TableData>
-        <TableData>{doc.Date}</TableData>
+        <TableData>{doc.Email}</TableData>
+        <TableData>{doc.Name}</TableData>
+        <TableData>{doc.contact}</TableData>
+        <TableData>{doc.role}</TableData>
         <TableData>
-          <Button bg='light-success' small rounded startIcon={<Icon icon="far fa-edit"  />}
+          {/* <Button bg='light-success' small rounded startIcon={<Icon icon="far fa-edit"  />}
           onClick={()=>HandleModal(doc)}
           >View</Button>
-          {' | '}
-          <Button bg='light-danger' small rounded>Delete</Button>
+          {' | '} */}
+          <Button bg='light-danger' small rounded startIcon={<Icon icon="fas fa-bin"  />}>Delete</Button>
         </TableData>
     </TableRow>
       ))
