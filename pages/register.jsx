@@ -116,7 +116,7 @@ export default function Register() {
 }
   }
   return (
-    <div className='fit central' style={{minHeight:"100vh"}}>
+    <div className='fit central padding-20' style={{minHeight:"100vh"}}>
       {
         loading ?
         <FunLoader size='60px' fixed/>
