@@ -1,7 +1,4 @@
 import Head from 'next/head'
-import Image from 'next/image'
-import { Inter } from 'next/font/google'
-import Starter from 'funuicss/component/Starter'
 import Link from 'next/link'
 import Div from 'funuicss/component/Div'
 import Input from 'funuicss/component/Input'
@@ -46,10 +43,12 @@ export default function Home() {
       setloading(false)
      if(data.status == 'error'){
       setinfo(true)
-      setmessage(data.message)
+      setmessage(data.message.toString())
      }else{
+      let rData  = data.Data 
+      rData['isAdmin'] = true
      new Promise((resolve, reject) => {
-      localStorage.setItem('user' , JSON.stringify(data))
+      localStorage.setItem('user' , JSON.stringify(rData))
       resolve();
      })
      .then(()=> window.location.assign('/dashboard'))
@@ -82,13 +81,13 @@ export default function Home() {
       }}>
       <div className="padding-bottom-20">
       <Typography
-        text="Login Account"
+        text="Admin Login"
         heading="h2"
         lighter
         />
         <div />
       <Typography
-        text="Enter your email number and password to login"
+        text="Enter your email and password to login"
         size='small'
         />
       </div>

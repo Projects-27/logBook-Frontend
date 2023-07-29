@@ -18,3 +18,8 @@
   right: 0;
   top: 0;
 }
+
+@media (max-width:800px) {
+  .side_bar{width: 0px;overflow: auto;padding: 0;position: fixed;z-index: 20;}
+  .content{width: 100%;position: static;}
+}

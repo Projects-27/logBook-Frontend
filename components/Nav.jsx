@@ -20,6 +20,7 @@ import ListItem from 'funuicss/component/ListItem'
 export default function Nav() {
 const [drop1, setdrop1] = useState(false);
 const [me, setme] = useState('')
+const [sidebar, setsidebar] = useState('')
 useEffect(() => {
 isOnline()
 .then(data=>{
@@ -38,6 +39,14 @@ useEffect(() => {
   })
 },[])
 
+useEffect(() => {
+  window.addEventListener('resize' , ()=>{
+    if(screen.width > 800){
+      setsidebar("")
+    }
+  })
+}, [])
+
 
   return (
     <div>
@@ -55,26 +64,33 @@ useEffect(() => {
 </Link>
   </LinkWrapper>
   <SidebarTrigger
-    onClick={()=>setopen(true)}
+    onClick={()=>setsidebar("200px")}
   content={<Icon icon="fas fa-bars" />}
   />
   </Navbar>
       </div>
       :''
       }
-      <div className="side_bar card">
+      <div className="side_bar card" style={{width:sidebar}}>
       <List>
       <Link href={'/user'}>
       <ListItem>
         <Button fullWidth funcss='text-left' startIcon={<Icon icon="bx bx-user" />} text="Profile" />
         </ListItem>
       </Link>
-      <Link href={'/staff'}>
-      <ListItem>
-        <Button fullWidth funcss='text-left' startIcon={<Icon icon="bx bx-user" />} text="Staffs" />
-        </ListItem>
-      </Link>
-      <Link href={'/dashboard'}>
+   {
+    me.role === 'super' ?
+    <Link href={'/staff'}>
+    <ListItem>
+      <Button fullWidth funcss='text-left' startIcon={<Icon icon="bx bx-user" />} text="Staffs" />
+      </ListItem>
+    </Link>
+    : ''
+   }
+     {
+      me.role ?
+      <>
+       <Link href={'/dashboard'}>
       <ListItem>
         <Button fullWidth funcss='text-left' startIcon={<Icon icon="bx bx-chart" />} text="DashBoard" />
         </ListItem>
@@ -84,6 +100,9 @@ useEffect(() => {
         <Button fullWidth funcss='text-left' startIcon={<Icon icon="bx bx-user-pin" />} text="Students" />
         </ListItem>
       </Link>
+      </>
+      :''
+     }
       <Link href={'/log'}>
       <ListItem>
         <Button fullWidth funcss='text-left' startIcon={<Icon icon="bx bx-book" />} text="Logs" />

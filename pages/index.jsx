@@ -15,6 +15,7 @@ import {FunRequest , FunGet} from 'funuicss/js/Fun'
 import Alert from 'funuicss/component/Alert'
 import { useState } from 'react'
 import { useEffect } from 'react'
+import  RowFlex  from 'funuicss/component/RowFlex';
 export default function Home() {
   const [loading, setloading] = useState(false)
   const [info, setinfo] = useState(false)
@@ -73,11 +74,13 @@ export default function Home() {
         <Alert message={message} fixed="top-middle" type="info" />
       }
       <div style={{ 
-        maxWidth:'300px',
+        maxWidth:'350px',
         width:"100%"
       }}>
       <div className="padding-bottom-20">
-      <Typography
+      <RowFlex justify="space-between" gap='1rem'>
+        <div>
+        <Typography
         text="Login Account"
         heading="h2"
         lighter
@@ -87,18 +90,30 @@ export default function Home() {
         text="Enter your matric number and password to login"
         size='small'
         />
+        </div>
+        <div >
+          <Link href={"/admin/login"}>
+            <Button
+            text='Admin'
+            small
+            bg='secondary'
+            rounded
+            />
+          </Link>
+        </div>
+      </RowFlex>
       </div>
       <IconicInput 
     funcss="section full-width" 
     position="left" 
     icon={ <Icon icon="bx bx-envelope" color="primary" />}
-    input={<Input type="text" label="Matric" funcss="full-width matric" bordered />}
+    input={<Input type="text" label="Matric" funcss="full-width matric" />}
      />
       <IconicInput 
     funcss="section full-width" 
     position="left" 
     icon={ <Icon icon="bx bx-lock" color="primary" />}
-    input={<Input type="password" label="Password" funcss="full-width password" bordered />}
+    input={<Input type="password" label="Password" funcss="full-width password"/>}
      />
      <Button
      text="Login Account"

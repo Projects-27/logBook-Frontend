@@ -38,9 +38,12 @@ export default function Log() {
     const [deleteModal, setdeleteModal] = useState(false)
     const [editModal, seteditModal] = useState(false)
     const [search, setsearch] = useState('')
+    const [route, setroute] = useState("/all/logs")
+
     useEffect(() => {
-     if(!logs && me.id){
-        Axios.get(EndPoint + "/all/logs" )
+     if(!logs && me){
+      console.log(route)
+        Axios.get(EndPoint + route )
         .then(data=>{
          setlogs(data.data.data)
         }).catch(err=>console.log(err))
@@ -59,11 +62,20 @@ export default function Log() {
         }
       }, [loading , info])
 useEffect(() => {
-isOnline()
+if(!me){
+  isOnline()
 .then(data=>{
   setme(data)
+if(data.isAdmin){
+  if(data.role == 'supervisor'){
+    setroute(`/supervisor/logs/${data.Email}`)
+  }
+}else{
+  setroute(`/my/logs/${data.MatrixNumber}`)
+}
 })
-}, [])
+}
+})
 
 const handleLog = ()=>{
 const date = FunGet.val(".date")
@@ -74,7 +86,8 @@ const data = {
     Activity: activity,
     StudentID: me.id ,
     matric_number:me.MatrixNumber,
-    title:title
+    title:title,
+    supervisor_email:me.internal_supervisor.Email
 }
 
 if(date && activity){
@@ -196,13 +209,13 @@ onClick={()=>seteditModal(false)}
       <Nav />
       <div>
       <Link href="/user" legacyBehavior>
-           <Button rounded bg="light" small>
+           <Button rounded bg="light" smaller>
            <Icon icon="far fa-user" /> Profile
            </Button>
             </Link>
             <BreadCrumb type={"straight"} />
             <Link href="#" legacyBehavior>
-           <Button rounded bg="primary" small>
+           <Button rounded bg="primary" smaller>
            <Icon icon="bx bx-book" /> Log Book
            </Button>
             </Link>
@@ -220,13 +233,15 @@ onClick={()=>seteditModal(false)}
                 />
                 </Div>
                 <Div>
-                    <Button
+                   {
+                    !me.isAdmin &&  <Button
                     text="Create Log"
                     bg='primary'
                     startIcon={<Icon icon="bx bx-plus" />}
-                    onClick={()=>setmodal2(true)}
-
+                    onClick={()=>setmodal2(true)} 
+                    rounded
                     />
+                   }
                 </Div>
               </RowFlex>
             </div>
@@ -262,6 +277,7 @@ onClick={()=>seteditModal(false)}
       </div>
       <Table  stripped >
        <TableHead>
+           <TableData>Supervisor</TableData>
            <TableData>Matric number</TableData>
            <TableData>Title</TableData>
            <TableData>Date</TableData>
@@ -277,6 +293,7 @@ onClick={()=>seteditModal(false)}
         }
       }).map(doc=>(
         <TableRow key={doc.id}>
+          <TableData>{doc.supervisor_email}</TableData>
         <TableData>{doc.matric_number ? doc.matric_number : ''}</TableData>
         <TableData>{doc.title.slice(0, doc.title.indexOf('.'))}</TableData>
         <TableData>{doc.Date}</TableData>
