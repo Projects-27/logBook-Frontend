@@ -39,6 +39,7 @@ export default function Log() {
     const [deleteModal, setdeleteModal] = useState(false)
     const [editModal, seteditModal] = useState(false)
     const [search, setsearch] = useState('')
+    const [deleteDoc, setdeleteDoc] = useState('')
     useEffect(() => {
      if(!staffs && me.id){
         Axios.get(EndPoint + "/all/admins" )
@@ -120,6 +121,19 @@ seteditDoc(doc)
 seteditModal(true)
 }
 
+const HandleDelete = ()=>{
+  setloading(true)
+  FunRequest.delete(EndPoint + "/deleteAdmin/" + deleteDoc.id)
+  .then((res)=>{
+    setdeleteModal(false) 
+    setstaffs('')
+    setloading(false)
+  }).catch(()=>{
+    setdeleteModal(false) 
+    setstaffs('')
+    setloading(false)
+  })
+}
   return (
     <div className='content'>
           {
@@ -192,36 +206,20 @@ rounded
 </Modal>
 
 
-<Modal 
+{
+  deleteDoc &&
+  <Modal 
 animation="ScaleUp" 
 duration={0.4} 
-open={editModal}
+open={deleteModal}
 backdrop
 maxWidth="500px"
 >
-<ModalHeader funcss='h5'>
-  Iddisah Yakubu
+<ModalHeader funcss='h5 padding'>
+Delete Staff
 </ModalHeader>
 <ModalContent funcss="padding-20">
-<RowFlex justify='space-between'>
-  <Div>
-  <Typography italic size='small' color='primary'>Student Id</Typography> 
- <div />
- <Typography>{editDoc.StudentID}</Typography>
-  </Div>
-  <Div>
-  <Typography italic size='small' color='primary'>Date</Typography> 
- <div />
- <Typography>{editDoc.Date}</Typography>
-  </Div>
-
-</RowFlex>
-<p>
-<Typography italic size='small' color='primary'>Activity</Typography> 
-   <Div funcss='border padding round-edge'>
-    {editDoc.Activity}
-    </Div>
-  </p>
+Are you sure you want delete <span className="text-danger">{deleteDoc.UserName}</span>
 </ModalContent>
 <ModalAction funcss="text-right light bottomEdge padding-20">
 <Button 
@@ -229,16 +227,19 @@ bg="success"
 outlined
 text="Cancel"
 rounded
-onClick={()=>seteditModal(false)}
+onClick={()=>setdeleteModal(false)}
 />
+&nbsp; 
+&nbsp; 
 <Button 
 bg="light-danger"
-text="Deactivate"
+text="Delete Staff"
 rounded
-onClick={()=>seteditModal(false)}
+onClick={HandleDelete}
 />
 </ModalAction>
 </Modal>
+}
 
       <Nav />
       <div>
@@ -313,7 +314,10 @@ onClick={()=>seteditModal(false)}
            <TableData>Full Name</TableData>
            <TableData>Contact</TableData>
            <TableData>Role</TableData>
-           <TableData>Edit</TableData>
+          {
+            me.role == 'super' &&
+            <TableData>Edit</TableData>
+          }
        </TableHead>
      {
       staffs &&
@@ -326,16 +330,18 @@ onClick={()=>seteditModal(false)}
       }).map(doc=>(
         <TableRow key={doc.id}>
         <TableData>{doc.Email}</TableData>
-        <TableData>{doc.Name}</TableData>
+        <TableData>{doc.UserName}</TableData>
         <TableData>{doc.contact}</TableData>
         <TableData>{doc.role}</TableData>
+        {
+            me.role == 'super' &&
         <TableData>
-          {/* <Button bg='light-success' small rounded startIcon={<Icon icon="far fa-edit"  />}
-          onClick={()=>HandleModal(doc)}
-          >View</Button>
-          {' | '} */}
-          <Button bg='light-danger' small rounded startIcon={<Icon icon="fas fa-bin"  />}>Delete</Button>
+          <Button bg='light-danger' small rounded startIcon={<Icon icon="fas fa-bin"  />} onClick={()=>{
+            setdeleteModal(true)
+            setdeleteDoc(doc)
+          }}>Delete</Button>
         </TableData>
+}
     </TableRow>
       ))
      }

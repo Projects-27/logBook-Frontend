@@ -201,6 +201,36 @@ maxWidth="500px"
     </RowFlex>
     </Div>
   </p>
+<p>
+<Typography italic color='primary'>Organization:</Typography> 
+   <Div funcss='border padding round-edge'>
+    <RowFlex gap='0.3rem' justify='space-between'>
+      <Div>
+          <Typography italic size='small' color='primary'>Name:</Typography> 
+    <div />
+    {viewDoc.organization.name}
+      </Div>
+      <Div>
+          <Typography italic size='small' color='primary'>Contact:</Typography> 
+    <div />
+    {viewDoc.organization.contact}
+      </Div>
+    </RowFlex>
+    <div className="section hr"></div>
+    <RowFlex gap='0.3rem' justify='space-between'>
+      <Div>
+          <Typography italic size='small' color='primary'>Supervisor:</Typography> 
+    <div />
+    {viewDoc.organization.supervisor}
+      </Div>
+      <Div>
+          <Typography italic size='small' color='primary'>Address:</Typography> 
+    <div />
+    {viewDoc.organization.address}
+      </Div>
+    </RowFlex>
+    </Div>
+  </p>
 </ModalContent>
 </Modal>
 

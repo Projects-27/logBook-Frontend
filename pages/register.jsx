@@ -167,7 +167,7 @@ export default function Register() {
           {
             supervisors && 
             supervisors.map(doc=>(
-              <option value={JSON.stringify(doc)} key={doc.Name}>{doc.Name}</option>
+              <option value={JSON.stringify(doc)} key={doc.UserName}>{doc.UserName}</option>
             ))
           }
           </select>
