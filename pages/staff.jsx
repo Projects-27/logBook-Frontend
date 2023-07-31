@@ -75,7 +75,7 @@ const password = FunGet.val(".password")
 const department = FunGet.val(".department")
 const data = {
     Email: email,
-    Name: full_name,
+    UserName: full_name,
     contact: contact,
     role: role,
     Password: password,
