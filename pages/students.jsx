@@ -38,9 +38,12 @@ export default function Log() {
     const [deleteModal, setdeleteModal] = useState(false)
     const [editModal, seteditModal] = useState(false)
     const [search, setsearch] = useState('')
+    const [viewDoc, setviewDoc] = useState('')
+    const [route, setroute] = useState("/all/users")
+
     useEffect(() => {
      if(!students && me.id){
-        Axios.get(EndPoint + "/all/users" )
+        Axios.get(EndPoint + route )
         .then(data=>{
          setstudents(data.data.data)
         }).catch(err=>console.log(err))
@@ -59,12 +62,22 @@ export default function Log() {
         }
       }, [loading , info])
 useEffect(() => {
-isOnline()
-.then(data=>{
-  setme(data)
-})
-}, [])
-
+  if(!me){
+    isOnline()
+  .then(data=>{
+    setme(data)
+  if(data.isAdmin){
+    if(data.role == 'supervisor'){
+      setroute(`/supervisor/users/${data.Email}`)
+    }else if(data.role == 'super'){
+      setroute('/all/users')
+    }
+  }else{
+    setroute(`/`)
+  }
+  })
+  }
+  })
 const handleLog = ()=>{
 const date = FunGet.val(".date")
 const activity = FunGet.val(".activity")
@@ -144,7 +157,9 @@ onClick={handleLog}
 </Modal>
 
 
-<Modal 
+{
+  viewDoc &&
+  <Modal 
 animation="ScaleUp" 
 duration={0.4} 
 open={editModal}
@@ -152,46 +167,44 @@ backdrop
 maxWidth="500px"
 >
 <ModalHeader funcss='h5'>
-  Iddisah Yakubu
+  {viewDoc.UserName}
+  <CloseModal  onClick={()=>seteditModal(false)}/>
 </ModalHeader>
 <ModalContent funcss="padding-20">
 <RowFlex justify='space-between'>
   <Div>
-  <Typography italic size='small' color='primary'>Student Id</Typography> 
+  <Typography italic size='small' color='primary'>Student Id:</Typography> 
  <div />
- <Typography>{editDoc.StudentID}</Typography>
+ <Typography>{viewDoc.MatrixNumber}</Typography>
   </Div>
   <Div>
-  <Typography italic size='small' color='primary'>Date</Typography> 
+  <Typography italic size='small' color='primary'>Level:</Typography> 
  <div />
- <Typography>{editDoc.Date}</Typography>
+ <Typography>{viewDoc.Level}</Typography>
   </Div>
 
 </RowFlex>
 <p>
-<Typography italic size='small' color='primary'>Activity</Typography> 
+<Typography italic size='small' color='primary'>Supervisor:</Typography> 
    <Div funcss='border padding round-edge'>
-    {editDoc.Activity}
+    <RowFlex gap='0.3rem' justify='space-between'>
+      <Div>
+          <Typography italic size='small' color='primary'>Fullname:</Typography> 
+    <div />
+    {viewDoc.internal_supervisor.UserName}
+      </Div>
+      <Div>
+          <Typography italic size='small' color='primary'>Contact:</Typography> 
+    <div />
+    {viewDoc.internal_supervisor.contact}
+      </Div>
+    </RowFlex>
     </Div>
   </p>
 </ModalContent>
-<ModalAction funcss="text-right light bottomEdge padding-20">
-<Button 
-bg="success"
-outlined
-text="Cancel"
-rounded
-onClick={()=>seteditModal(false)}
-/>
-<Button 
-bg="light-danger"
-text="Deactivate"
-rounded
-onClick={()=>seteditModal(false)}
-/>
-</ModalAction>
 </Modal>
 
+}
       <Nav />
       <div>
       <Link href="/user" legacyBehavior>
@@ -255,9 +268,11 @@ onClick={()=>seteditModal(false)}
        <TableHead>
            <TableData>Matric</TableData>
            <TableData>Full Name</TableData>
+           <TableData>Supervisor</TableData>
            <TableData>Level</TableData>
            <TableData>Department</TableData>
            <TableData>Institution</TableData>
+           <TableData>View</TableData>
        </TableHead>
      {
       students &&
@@ -273,15 +288,19 @@ onClick={()=>seteditModal(false)}
         <TableRow key={doc.id}>
         <TableData>{doc.MatrixNumber}</TableData>
         <TableData>{doc.UserName}</TableData>
+        <TableData>{doc.internal_supervisor.UserName}</TableData>
         <TableData>{doc.Level}</TableData>
         <TableData>{doc.Department}</TableData>
         <TableData>{doc.organization.name}</TableData>
         <TableData>
           <Button bg='light-success' small rounded startIcon={<Icon icon="far fa-edit"  />}
-          onClick={()=>HandleModal(doc)}
+          onClick={()=>{
+            HandleModal(true)
+            setviewDoc(doc)
+          }}
           >View</Button>
-          {' | '}
-          <Button bg='light-danger' small rounded>Delete</Button>
+          {/* {' | '}
+          <Button bg='light-danger' small rounded>Delete</Button> */}
         </TableData>
     </TableRow>
       ))

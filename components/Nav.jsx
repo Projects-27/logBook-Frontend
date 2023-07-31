@@ -17,6 +17,7 @@ import {isOnline, logOut} from '../Functions/Functions'
 import Link from 'next/link'
 import List from 'funuicss/component/List'
 import ListItem from 'funuicss/component/ListItem'
+import RowFlex from 'funuicss/component/RowFlex';
 export default function Nav() {
 const [drop1, setdrop1] = useState(false);
 const [me, setme] = useState('')
@@ -60,7 +61,15 @@ useEffect(() => {
   
   <LinkWrapper visibleLinks>
 <Link href='/user'>
-<Button   text={me.UserName} color="secondary" startIcon={<Icon icon={"bx bx-user"} />} />
+<>
+<RowFlex gap='0.5rem'>
+  <div><Icon icon={"bx bx-user"} /></div>
+<div>
+{me.UserName}
+<div className='text-small text-bold text-primary italic'>{me.role ? me.role : ''}</div>
+</div>
+</RowFlex>
+</>
 </Link>
   </LinkWrapper>
   <SidebarTrigger

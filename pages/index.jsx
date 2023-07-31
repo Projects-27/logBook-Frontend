@@ -82,7 +82,7 @@ export default function Home() {
         <div>
         <Typography
         text="Login Account"
-        heading="h2"
+        heading="h4"
         lighter
         />
         <div />
@@ -98,6 +98,7 @@ export default function Home() {
             small
             bg='secondary'
             rounded
+            width='70px'
             />
           </Link>
         </div>

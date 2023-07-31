@@ -69,6 +69,8 @@ if(!me){
 if(data.isAdmin){
   if(data.role == 'supervisor'){
     setroute(`/supervisor/logs/${data.Email}`)
+  }else if(data.role == 'super'){
+    setroute('/all/logs')
   }
 }else{
   setroute(`/my/logs/${data.MatrixNumber}`)
