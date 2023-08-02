@@ -65,7 +65,7 @@ export default function Home() {
 }
   }
   return (
-    <div className='fit central' style={{minHeight:"100vh"}}>
+    <div className='fit central bg_patterns' style={{minHeight:"100vh"}}>
       {
     info ? 
         <Alert message={message} fixed="top-middle" type="info" />
@@ -75,8 +75,8 @@ export default function Home() {
         loading ?
         <FunLoader size='65px' fixed/>:''
       }
-      <div style={{
-        maxWidth:'300px',
+      <div  className='card round-edge padding-20' style={{ 
+        maxWidth:'400px',
         width:"100%"
       }}>
       <div className="padding-bottom-20">
@@ -95,19 +95,20 @@ export default function Home() {
     funcss="section full-width" 
     position="left" 
     icon={ <Icon icon="bx bx-envelope" color="primary" />}
-    input={<Input type="text" label="Email" funcss="full-width email" bordered  />}
+    input={<Input type="text" label="Email" funcss="full-width email" bordered  rounded/>}
      />
       <IconicInput 
     funcss="section full-width" 
     position="left" 
     icon={ <Icon icon="bx bx-lock" color="primary" />}
-    input={<Input type="password" label="Password" funcss="full-width password" bordered />}
+    input={<Input type="password" label="Password" funcss="full-width password" bordered rounded/>}
      />
      <Button
      text="Login Account"
      bg='primary'
      fullWidth
      onClick={Submit}
+     rounded
      />
      
       </div>

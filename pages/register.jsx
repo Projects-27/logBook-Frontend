@@ -59,6 +59,7 @@ export default function Register() {
     const password = FunGet.val(".password")
     const username = FunGet.val(".username")
     const level = FunGet.val(".level")
+    const contact = FunGet.val(".contact")
     const department = FunGet.val(".department")
     const internal_supervisor = FunGet.val(".internal_supervisor")
     const institution_supervisor = FunGet.val(".institution_supervisor")
@@ -68,7 +69,7 @@ export default function Register() {
     const data = {
       UserName: username,
       MatrixNumber:matric,
-      StudentContact:password,
+      StudentContact:contact,
       Password:password,
       Level:level,
       Department:department,
@@ -88,7 +89,8 @@ export default function Register() {
    institution_name && 
    institution_number &&
    institution_supervisor &&
-   institution_address 
+   institution_address  &&
+   contact
 
    ){
   setloading(true)
@@ -116,7 +118,7 @@ export default function Register() {
 }
   }
   return (
-    <div className='fit central padding-20' style={{minHeight:"100vh"}}>
+    <div className='fit central padding-20 bg_patterns' style={{minHeight:"100vh"}}>
       {
         loading ?
         <FunLoader size='60px' fixed/>
@@ -124,11 +126,13 @@ export default function Register() {
         <Alert message={message} fixed="top-middle" type="info" />
         :''
       }
-      <div style={{
-        maxWidth:'450px',
-        width:"100%"
+      <div className='card round-edge padding-20' style={{ 
+        maxWidth:'500px',
+        width:"100%",
+        maxHeight:"80vh",
+        overflowY:'auto'
       }}>
-      <div className=" padding-top-50">
+      <div className="">
     <div className="padding">
     <Typography
         text="New Student Account"

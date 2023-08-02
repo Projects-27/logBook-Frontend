@@ -26,6 +26,7 @@ import Table from 'funuicss/component/Table'
 import TableHead from 'funuicss/component/TableHead'
 import TableData from 'funuicss/component/TableData'
 import TableRow from 'funuicss/component/TableRow'
+import FunLoader from 'funuicss/component/FunLoader';
 
 
 export default function Log() {
@@ -39,10 +40,11 @@ export default function Log() {
     const [editModal, seteditModal] = useState(false)
     const [search, setsearch] = useState('')
     const [route, setroute] = useState("/all/logs")
+    const [updateDoc, setupdateDoc] = useState(false)
+    const [update, setupdate] = useState(false)
 
     useEffect(() => {
      if(!logs && me){
-      console.log(route)
         Axios.get(EndPoint + route )
         .then(data=>{
          setlogs(data.data.data)
@@ -86,28 +88,51 @@ const title = FunGet.val(".title")
 const data = {
     Date: date,
     Activity: activity,
-    StudentID: me.id ,
     matric_number:me.MatrixNumber,
     title:title,
     supervisor_email:me.internal_supervisor.Email
 }
+const udata = {
+    Date: date,
+    Activity: activity,
+    title:title,
+}
 
 if(date && activity){
+ if(update){
+  setmodal2(false)
+  setloading(true)
+  FunRequest.patch(EndPoint + '/update/log/' + updateDoc.id, udata).then((doc)=>{
+    setupdateDoc(' ')
     setmodal2(false)
-    setloading(true)
-    setmessage("Creating Log: Please wait...")
-    FunRequest.post(EndPoint + '/log', data).then((doc)=>{
-        if(doc.status == "ok"){
-            setinfo(true)
-            setmessage("Data Inserted")
-            setmodal2(false)
-            setlogs('')
-        }else{
-            setinfo(true)
-            setmessage(doc.message)
-        }
-    })
-      .catch(err=>alert(err))
+    setlogs('')
+    setupdate(false)
+      if(doc.status == "ok"){
+          setinfo(true)
+          setmessage("data updated")
+      }else{
+          setinfo(true)
+          setmessage(doc.message)
+          setupdate(false)
+      }
+  })
+    .catch(err=>alert(err))
+ }else{
+  setmodal2(false)
+  setloading(true)
+  FunRequest.post(EndPoint + '/log', data).then((doc)=>{
+      if(doc.status == "ok"){
+          setinfo(true)
+          setmessage("Data Inserted")
+          setmodal2(false)
+          setlogs('')
+      }else{
+          setinfo(true)
+          setmessage(doc.message)
+      }
+  })
+    .catch(err=>alert(err))
+ }
 }else{
 setinfo(true)
 setmessage("Enter all details")
@@ -120,11 +145,28 @@ seteditDoc(doc)
 seteditModal(true)
 }
 
+const HandlePrint = ()=>{
+  const myElement = document.getElementById('documents');
+  printElement(myElement);
+  function printElement(element) {
+      const originalContents = document.body.innerHTML;
+      const printContents = element.innerHTML;
+
+      document.body.innerHTML = printContents;
+      window.print();
+
+      document.body.innerHTML = originalContents;
+
+
+  }
+  
+}
+
   return (
     <div className='content'>
           {
         loading ?
-        <Alert message={message} fixed="top-middle" type="success" isLoading />
+        <FunLoader size='70px' fixed />
         : info ? 
         <Alert message={message} fixed="top-middle" type="info" />
         :''
@@ -134,16 +176,17 @@ animation="ScaleUp"
 duration={0.4} 
 open={modal2}
 backdrop
-maxWidth="400px"
+maxWidth="900px"
 >
 <ModalHeader>
 <Typography text="Create/Edit Log" heading="h5"/>
 <CloseModal  onClick={()=>setmodal2(false)}/>
 </ModalHeader>
 <ModalContent>
-<Input label="Title" type='text' bordered fullWidth funcss="title" />
+<div className="width-500-max center">
+<Input label="Title" defaultValue={ updateDoc ? updateDoc.title : ''} type='text' bordered fullWidth funcss="title" />
 <Section />
-<Input label="Date" type='date' bordered fullWidth funcss="date" />
+<Input label="Date" type='date' bordered fullWidth funcss="date" defaultValue={ updateDoc ? updateDoc.Date : ''}  />
 <Section />
 <Input 
 label="Activity"
@@ -152,6 +195,8 @@ label="Activity"
   multiline
   funcss='activity'
   rows={5}
+  defaultValue={ updateDoc ? updateDoc.Activity : ''}
+
  />
 <Section />
 <Section />
@@ -161,6 +206,7 @@ bg="primary"
 fullWidth
 onClick={handleLog}
 />
+</div>
 </ModalContent>
 </Modal>
 
@@ -174,6 +220,7 @@ maxWidth="900px"
 >
 <ModalHeader funcss='h5'>
 {editDoc.title}
+<CloseModal  onClick={()=>seteditModal(false)}/>
 </ModalHeader>
 <ModalContent funcss="padding-20">
 <div className="width-500-max center">
@@ -198,14 +245,7 @@ maxWidth="900px"
   </p>
 </div>
 </ModalContent>
-<ModalAction funcss="text-right light bottomEdge padding-20">
-<Button 
-bg="light-danger"
-text="Close"
-rounded
-onClick={()=>seteditModal(false)}
-/>
-</ModalAction>
+
 </Modal>
 
       <Nav />
@@ -253,8 +293,21 @@ onClick={()=>seteditModal(false)}
       <div className="padding hr">
       <RowFlex justify='space-between'>
       <Input label="Matric Number" onChange={(e)=>setsearch(e.target.value)} bordered rounded/>
+    
       <div>
-        <Typography
+ 
+   
+       <RowFlex gap='1rem'>
+       <Button 
+      text="Print Records"
+      bg='primary'
+      outlined
+      rounded
+      startIcon={<Icon icon='fas fa-print' />}
+      onClick={HandlePrint}
+      />
+      <div>
+      <Typography
         text='records'
         italic 
         color='primary'
@@ -275,17 +328,21 @@ onClick={()=>seteditModal(false)}
         }
         </div>
       </div>
+       </RowFlex>
+      </div>
       </RowFlex>
       </div>
-      <Table  stripped >
+     <div id="documents">
+     <Table  stripped >
        <TableHead>
-           <TableData>Supervisor</TableData>
-           <TableData>Matric number</TableData>
-           <TableData>Title</TableData>
-           <TableData>Date</TableData>
-           <TableData>Edit</TableData>
+           <TableData className='text-bold'>Supervisor</TableData>
+           <TableData className='text-bold'>Matric number</TableData>
+           <TableData className='text-bold'>Title</TableData>
+           <TableData className='text-bold'>Date</TableData>
+           <TableData className='text-bold'>Edit</TableData>
        </TableHead>
-     {
+    <tbody>
+    {
       logs &&
       logs  .filter(fDoc =>{
         if(!search){
@@ -300,16 +357,29 @@ onClick={()=>seteditModal(false)}
         <TableData>{doc.title.slice(0, doc.title.indexOf('.'))}</TableData>
         <TableData>{doc.Date}</TableData>
         <TableData>
-          <Button bg='light-success' small rounded startIcon={<Icon icon="far fa-edit"  />}
+          <Button bg='light' small rounded startIcon={<Icon icon="fas fa-eye"  />}
           onClick={()=>HandleModal(doc)}
           >View</Button>
-          {' | '}
-          <Button bg='light-danger' small rounded>Delete</Button>
+       {
+      me.role ?
+      "" :
+      <>
+        
+      {' | '}
+        <Button onClick={()=>{
+          setupdate(true)
+          setupdateDoc(doc)
+          setmodal2(true)
+        }} bg='light-success' small rounded  startIcon={<Icon icon="far fa-edit"  />}>Update</Button>
+        </>
+       }
         </TableData>
     </TableRow>
       ))
      }
+    </tbody>
     </Table>
+     </div>
     </Div>
     </div>
   )

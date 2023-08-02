@@ -65,7 +65,7 @@ export default function Home() {
 }
   }
   return (
-    <div className='fit central padding-20' style={{minHeight:"100vh"}}>
+    <div className='fit central padding-20 bg_patterns' style={{minHeight:"100vh"}}>
       {
         loading &&
         <FunLoader size='70px' fixed backdrop />
@@ -73,8 +73,8 @@ export default function Home() {
       { info &&
         <Alert message={message} fixed="top-middle" type="info" />
       }
-      <div style={{ 
-        maxWidth:'350px',
+      <div className='card round-edge padding-20' style={{ 
+        maxWidth:'400px',
         width:"100%"
       }}>
       <div className="padding-bottom-20">
@@ -121,6 +121,7 @@ export default function Home() {
      bg='primary'
      fullWidth
      onClick={Submit}
+     rounded
      />
      <div className='padding-top-20 text-center'>
       Or <br /> <Link href='/register'>Register Account</Link>
