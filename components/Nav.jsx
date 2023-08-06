@@ -18,6 +18,7 @@ import Link from 'next/link'
 import List from 'funuicss/component/List'
 import ListItem from 'funuicss/component/ListItem'
 import RowFlex from 'funuicss/component/RowFlex';
+import DarkMode from 'funuicss/component/DarkMode'
 export default function Nav() {
 const [drop1, setdrop1] = useState(false);
 const [me, setme] = useState('')
@@ -48,6 +49,30 @@ useEffect(() => {
   })
 }, [])
 
+const [theme, settheme] = useState("light")
+useEffect(() => {
+    if(localStorage.getItem("theme") == "light" && localStorage.getItem("theme")){
+        DarkMode(false)
+        settheme("light")
+    }else{
+        DarkMode(true)
+        settheme("dark")
+    }
+}, [])
+
+const handleTheme = ()=>{
+  if(theme == "light"){
+      DarkMode(true)
+      settheme("dark")
+      localStorage.setItem("theme", "dark")
+      window.location.reload()
+  }else{
+      DarkMode(false)
+      settheme("light")
+      localStorage.setItem("theme", "light")
+      window.location.reload()
+  }
+}
 
   return (
     <div>
@@ -80,18 +105,24 @@ useEffect(() => {
       </div>
       :''
       }
-      <div className="side_bar card" style={{width:sidebar}}>
+      <div className="side_bar " style={{width:sidebar}}>
       <List>
+      {/* <ListItem>
+        <Button fullWidth 
+        onClick={handleTheme}
+        funcss='text-left card' rounded startIcon={  <Icon icon={theme == "light" ? "fas fa-moon" : "fas fa-sun"}/>} 
+        text={theme == "light" ? "Dark Mode" : "Light Mode"}/>
+        </ListItem> */}
       <Link href={'/user'}>
       <ListItem>
-        <Button fullWidth funcss='text-left' startIcon={<Icon icon="bx bx-user" />} text="Profile" />
+        <Button fullWidth funcss='text-left card' rounded startIcon={<Icon icon="bx bx-home-alt" />} text="Profile" />
         </ListItem>
       </Link>
    {
     me.role === 'super' ?
     <Link href={'/staff'}>
     <ListItem>
-      <Button fullWidth funcss='text-left' startIcon={<Icon icon="bx bx-user" />} text="Staffs" />
+      <Button fullWidth funcss='text-left card' rounded startIcon={<Icon icon="bx bx-user" />} text="Staffs" />
       </ListItem>
     </Link>
     : ''
@@ -101,26 +132,30 @@ useEffect(() => {
       <>
        <Link href={'/dashboard'}>
       <ListItem>
-        <Button fullWidth funcss='text-left' startIcon={<Icon icon="bx bx-chart" />} text="DashBoard" />
+        <Button fullWidth funcss='text-left card' rounded startIcon={<Icon icon="bx bx-chart" />} text="DashBoard" />
         </ListItem>
       </Link>
       <Link href={'/students'}>
       <ListItem>
-        <Button fullWidth funcss='text-left' startIcon={<Icon icon="bx bx-user-pin" />} text="Students" />
+        <Button fullWidth funcss='text-left card' rounded startIcon={<Icon icon="bx bx-user-pin" />} text="Students" />
         </ListItem>
       </Link>
       </>
-      :''
+      :      <Link href={'/user/update'}>
+      <ListItem>
+        <Button fullWidth funcss='text-left card' rounded startIcon={<Icon icon="bx bx-edit" />} text="Update" />
+        </ListItem>
+      </Link>
      }
       <Link href={'/log'}>
       <ListItem>
-        <Button fullWidth funcss='text-left' startIcon={<Icon icon="bx bx-book" />} text="Logs" />
+        <Button fullWidth funcss='text-left card' rounded startIcon={<Icon icon="bx bx-book" />} text="Logs" />
         </ListItem>
       </Link>
       <div className='section bt' />
       <Link href={'/'}>
       <ListItem>
-        <Button onClick={()=>logOut()} fullWidth rounded bg='light-danger' startIcon={<Icon icon="bx bx-exit" />} text="Logout" />
+        <Button onClick={()=>logOut()} fullWidth rounded bg='light-danger card' startIcon={<Icon icon="bx bx-exit" />} text="Logout" />
         </ListItem>
       </Link>
       </List>

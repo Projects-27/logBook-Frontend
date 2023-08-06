@@ -81,7 +81,7 @@ export default function Home() {
       <RowFlex justify="space-between" gap='1rem'>
         <div>
         <Typography
-        text="Login Account"
+        text="Student Login"
         heading="h4"
         lighter
         />
@@ -89,16 +89,19 @@ export default function Home() {
       <Typography
         text="Enter your matric number and password to login"
         size='small'
+        italic 
         />
         </div>
-        <div >
+        <div className='width-100'>
           <Link href={"/admin/login"}>
             <Button
-            text='Admin'
+            text='To Admin'
             small
             bg='secondary'
             rounded
             width='70px'
+            endIcon={<Icon icon="bx bx-chevron-right"  />}
+            fullWidth
             />
           </Link>
         </div>
@@ -113,15 +116,16 @@ export default function Home() {
       <IconicInput 
     funcss="section full-width" 
     position="left" 
-    icon={ <Icon icon="bx bx-lock" color="primary" />}
+    icon={ <Icon icon="bx bx-key" color="primary" />}
     input={<Input type="password" label="Password" funcss="full-width password"/>}
      />
      <Button
      text="Login Account"
-     bg='primary'
+     bg='gradient'
      fullWidth
      onClick={Submit}
-     rounded
+     rounded 
+     endIcon={<Icon icon="bx bx-send"  />}
      />
      <div className='padding-top-20 text-center'>
       Or <br /> <Link href='/register'>Register Account</Link>

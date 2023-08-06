@@ -269,7 +269,7 @@ maxWidth="500px"
       <Div funcss="card text-small round-edge margin-top-30">
       <div className="padding hr">
       <RowFlex justify='space-between'>
-      <Input label="Matric Number" onChange={(e)=>setsearch(e.target.value)} bordered rounded/>
+      <Input label="Matric Number" onChange={(e)=>setsearch(e.target.value)}  />
       <div>
         <Typography
         text='records'

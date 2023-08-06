@@ -42,6 +42,7 @@ export default function Log() {
     const [route, setroute] = useState("/all/logs")
     const [updateDoc, setupdateDoc] = useState(false)
     const [update, setupdate] = useState(false)
+    const [filterLevel, setfilterLevel] = useState("")
 
     useEffect(() => {
      if(!logs && me){
@@ -90,7 +91,8 @@ const data = {
     Activity: activity,
     matric_number:me.MatrixNumber,
     title:title,
-    supervisor_email:me.internal_supervisor.Email
+    supervisor_email:me.internal_supervisor.Email,
+    level:me.Level
 }
 const udata = {
     Date: date,
@@ -190,11 +192,10 @@ maxWidth="900px"
 <Section />
 <Input 
 label="Activity"
- bordered
   fullWidth
   multiline
   funcss='activity'
-  rows={5}
+  rows={7}
   defaultValue={ updateDoc ? updateDoc.Activity : ''}
 
  />
@@ -280,7 +281,10 @@ maxWidth="900px"
                     text="Create Log"
                     bg='primary'
                     startIcon={<Icon icon="bx bx-plus" />}
-                    onClick={()=>setmodal2(true)} 
+                    onClick={()=>{
+                      setmodal2(true)
+                      setupdateDoc('')
+                    }} 
                     rounded
                     />
                    }
@@ -293,6 +297,30 @@ maxWidth="900px"
       <div className="padding hr">
       <RowFlex justify='space-between'>
       <Input label="Matric Number" onChange={(e)=>setsearch(e.target.value)} bordered rounded/>
+      <Input  onChange={(e)=>setfilterLevel(e.target.value)} bordered rounded
+      select 
+      options={[
+        {
+            value:"",
+            text:"-- Filter Level --"
+        }
+        ,
+        {
+            value:"100",
+            text:"Level 100"
+        }
+        ,
+        {
+            value:"200",
+            text:"Level 200"
+        }
+        ,
+        {
+            value:"300",
+            text:"Level 300"
+        }
+       ]}
+      />
     
       <div>
  
@@ -338,6 +366,7 @@ maxWidth="900px"
            <TableData className='text-bold'>Supervisor</TableData>
            <TableData className='text-bold'>Matric number</TableData>
            <TableData className='text-bold'>Title</TableData>
+           <TableData className='text-bold'>Level</TableData>
            <TableData className='text-bold'>Date</TableData>
            <TableData className='text-bold'>Edit</TableData>
        </TableHead>
@@ -347,14 +376,16 @@ maxWidth="900px"
       logs  .filter(fDoc =>{
         if(!search){
             return logs
-        }else if(search.toString().includes(fDoc.matric_number.slice(0 , search.length))){
+        }else if(search.toString().includes(fDoc.matric_number.slice(0 , search.length)) ){
                 return fDoc
         }
-      }).map(doc=>(
+      })
+      .map(doc=>(
         <TableRow key={doc.id}>
           <TableData>{doc.supervisor_email}</TableData>
         <TableData>{doc.matric_number ? doc.matric_number : ''}</TableData>
         <TableData>{doc.title.slice(0, doc.title.indexOf('.'))}</TableData>
+        <TableData>{doc.level}</TableData>
         <TableData>{doc.Date}</TableData>
         <TableData>
           <Button bg='light' small rounded startIcon={<Icon icon="fas fa-eye"  />}

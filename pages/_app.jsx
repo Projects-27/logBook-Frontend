@@ -2,6 +2,7 @@ import 'funuicss/css/fun.css'
 import 'styles/globals.css'
 import Head from 'next/head'
 import { useEffect } from 'react'
+import DarkMode from 'funuicss/component/DarkMode'
 export default function App({ Component, pageProps }) {
   useEffect(() => {
   
@@ -9,7 +10,14 @@ export default function App({ Component, pageProps }) {
     root.style.setProperty('--primaryColor', "#7A316F"); 
     
   })
-  
+// useEffect(() => {
+//     if(localStorage.getItem("theme") == "light" && localStorage.getItem("theme")){
+//         DarkMode(false)
+//     }else{
+//         DarkMode(true)
+//     }
+// }, [])
+                
   return (
 <>
 <Head>
@@ -22,7 +30,9 @@ export default function App({ Component, pageProps }) {
           rel="stylesheet"
         />
       </Head> 
+  <div>
   <Component {...pageProps} />
+  </div>
 </>
   )
 }

@@ -1,4 +1,6 @@
-import React from 'react'
+import React, { PureComponent } from 'react';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+
 import Nav from '../components/Nav'
 import BreadCrumb from 'funuicss/component/BreadCrumb'
 import Button from 'funuicss/component/Button'
@@ -40,9 +42,14 @@ export default function Log() {
     const [editModal, seteditModal] = useState(false)
     const [search, setsearch] = useState('')
     const [students, setstudents] = useState('')
+    const [logroute, setlogroute] = useState("/all/logs")
+    const [userroute, setuserroute] = useState("/all/users")
+    const [l_hun, setl_hun] = useState(0)
+    const [graphDoc, setgraphDoc] = useState([])
+
     useEffect(() => {
      if(!logs && me.id){
-        Axios.get(EndPoint + "/all/logs" )
+        Axios.get(EndPoint + logroute )
         .then(data=>{
          setlogs(data.data.data)
         }).catch(err=>console.log(err))
@@ -50,9 +57,10 @@ export default function Log() {
     })
     useEffect(() => {
         if(!students && me.id){
-           Axios.get(EndPoint + "/all/users" )
+           Axios.get(EndPoint + userroute)
            .then(data=>{
             setstudents(data.data.data)
+         
            }).catch(err=>console.log(err))
         }
        })
@@ -70,11 +78,20 @@ export default function Log() {
         }
       }, [loading , info])
 useEffect(() => {
-isOnline()
+if(!me){
+  isOnline()
 .then(data=>{
   setme(data)
+  if(data.role == 'supervisor'){
+    setlogroute(`/supervisor/logs/${data.Email}`)
+    setuserroute(`/supervisor/users/${data.Email}`)
+  }else if(data.role == 'super'){
+    setlogroute('/all/logs')
+    setuserroute('/all/users')
+  }
 })
-}, [])
+}
+})
 
 const handleLog = ()=>{
 const date = FunGet.val(".date")
@@ -125,7 +142,7 @@ seteditModal(true)
 
       <Nav />
      
-     <div className="width-600-max center">
+     <div className="width-800-max center">
      <Grid gap>
 <Col sm={12} md={6} lg={6} >
        <div className="card round-edge padding-20">
@@ -142,6 +159,7 @@ seteditModal(true)
         </div>
         </Col>
         </Grid>
+
      </div>
     </div>
   )

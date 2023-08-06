@@ -12,6 +12,7 @@ import Alert from 'funuicss/component/Alert'
 import { useState } from 'react'
 import { useEffect } from 'react'
 import FunLoader from 'funuicss/component/FunLoader';
+import RowFlex from 'funuicss/component/RowFlex';
 export default function Home() {
   const [loading, setloading] = useState(false)
   const [info, setinfo] = useState(false)
@@ -79,17 +80,36 @@ export default function Home() {
         maxWidth:'400px',
         width:"100%"
       }}>
+
       <div className="padding-bottom-20">
-      <Typography
+      <RowFlex justify="space-between" gap='1rem'>
+        <div>
+        <Typography
         text="Admin Login"
-        heading="h2"
+        heading="h4"
         lighter
         />
         <div />
       <Typography
         text="Enter your email and password to login"
         size='small'
+        italic 
         />
+        </div>
+        <div className='width-100'>
+          <Link href={"/"}>
+            <Button
+            text='To Student'
+            small
+            bg='secondary'
+            rounded
+            width='70px'
+            endIcon={<Icon icon="bx bx-chevron-right"  />}
+            fullWidth
+            />
+          </Link>
+        </div>
+      </RowFlex>
       </div>
       <IconicInput 
     funcss="section full-width" 
