@@ -284,6 +284,7 @@ maxWidth="900px"
                     onClick={()=>{
                       setmodal2(true)
                       setupdateDoc('')
+                      setupdate(false)
                     }} 
                     rounded
                     />
