@@ -18,7 +18,6 @@ import Link from 'next/link'
 import List from 'funuicss/component/List'
 import ListItem from 'funuicss/component/ListItem'
 import RowFlex from 'funuicss/component/RowFlex';
-import DarkMode from 'funuicss/component/DarkMode'
 export default function Nav() {
 const [drop1, setdrop1] = useState(false);
 const [me, setme] = useState('')
@@ -49,30 +48,7 @@ useEffect(() => {
   })
 }, [])
 
-const [theme, settheme] = useState("light")
-useEffect(() => {
-    if(localStorage.getItem("theme") == "light" && localStorage.getItem("theme")){
-        DarkMode(false)
-        settheme("light")
-    }else{
-        DarkMode(true)
-        settheme("dark")
-    }
-}, [])
 
-const handleTheme = ()=>{
-  if(theme == "light"){
-      DarkMode(true)
-      settheme("dark")
-      localStorage.setItem("theme", "dark")
-      window.location.reload()
-  }else{
-      DarkMode(false)
-      settheme("light")
-      localStorage.setItem("theme", "light")
-      window.location.reload()
-  }
-}
 
   return (
     <div>
