@@ -62,7 +62,8 @@ export default function Register() {
       clearTimeout()
     }
   }, [ info])
-  
+
+
   const Submit = ()=>{
     setloading(false)
     setinfo('')
@@ -78,27 +79,7 @@ export default function Register() {
     const institution_number = FunGet.val(".institution_number")
     const institution_address = FunGet.val(".institution_address")
 
-    supervisors.filter((doc=>{
-        if(internal_supervisor == doc.id){
-          setgetI(doc)
-        }
-    }))
 
-    const data = {
-      UserName: username,
-      MatrixNumber:matric,
-      StudentContact:contact,
-      Password:password,
-      Level:level,
-      Department:department,
-      organization:{
-        name:institution_name,
-        contact:institution_number,
-        supervisor:institution_supervisor,
-        address:institution_address,
-      },
-      internal_supervisor:getI
-    }
  if(matric &&
    password && 
    username && 
@@ -108,24 +89,45 @@ export default function Register() {
    institution_number &&
    institution_supervisor &&
    institution_address  &&
-   contact
+   contact ,
+   internal_supervisor
 
    ){
   setloading(true)
-  FunRequest.patch(EndPoint + '/update/user/' + me.id , data).then((doc)=>{
-      if(doc.status.toLowerCase()  == 'ok'){
-        setinfo(true)
-        setmessage("user updated successfully")
-        logOut()
-      }else{
-        setinfo(true)
-        setmessage(doc.message)
+    FunRequest.get(EndPoint + "/admin/" + internal_supervisor)
+    .then(async(res)=>{
+      const data = {
+        UserName: username,
+        MatrixNumber:matric,
+        StudentContact:contact,
+        Password:password,
+        Level:level,
+        Department:department,
+        organization:{
+          name:institution_name,
+          contact:institution_number,
+          supervisor:institution_supervisor,
+          address:institution_address,
+        },
+        internal_supervisor:res.data.data
       }
+      FunRequest.patch(EndPoint + '/update/user/' + me.id , data).then((doc)=>{
+        if(doc.status.toLowerCase()  == 'ok'){
+          setinfo(true)
+          setmessage("user updated successfully")
+          logOut()
+        }else{
+          setinfo(true)
+          setmessage(doc.message)
+        }
+      })
+      .catch(err=>{
+        setinfo(true)
+    setmessage(err.message)
+      })
     })
-    .catch(err=>{
-      setinfo(true)
-  setmessage(err.message)
-    })
+
+
  }
  else{
   setinfo(true)

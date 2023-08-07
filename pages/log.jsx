@@ -49,6 +49,7 @@ export default function Log() {
         Axios.get(EndPoint + route )
         .then(data=>{
          setlogs(data.data.data)
+         console.log(data.data)
         }).catch(err=>console.log(err))
      }
     })
@@ -123,6 +124,7 @@ if(date && activity){
   setmodal2(false)
   setloading(true)
   FunRequest.post(EndPoint + '/log', data).then((doc)=>{
+    console.log(doc)
       if(doc.status == "ok"){
           setinfo(true)
           setmessage("Data Inserted")
@@ -296,9 +298,16 @@ maxWidth="900px"
       </div>
       <Div funcss="card text-small round-edge margin-top-30">
       <div className="padding hr">
-      <RowFlex justify='space-between'>
+      <RowFlex justify='space-between' responsiveSmall gap="0.5rem">
       <Input label="Matric Number" onChange={(e)=>setsearch(e.target.value)} bordered rounded/>
-      <Input  onChange={(e)=>setfilterLevel(e.target.value)} bordered rounded
+      <Input  onChange={(e)=>{
+      new Promise((resolve, reject) => {
+        setroute(me.isAdmin ? `/supervisor/logs/${me.Email}/${e.target.value}` : `/student/logs/${me.MatrixNumber}/${e.target.value}`)
+     resolve()
+      }).then(()=>{
+        setlogs("")
+      })
+      }} bordered rounded
       select 
       options={[
         {
