@@ -131,7 +131,7 @@ export default function Register() {
  }
  else{
   setinfo(true)
-  setmessage("Make sure to enter your details")
+  setmessage("Make sure to enter your details correctly")
 }
   }
   if(me){
