@@ -147,7 +147,7 @@ export default function Register() {
             <Alert message={message} fixed="top-middle" type="info" />
             :''
           }
-          <div className='card round-edge padding-20 width-500-max center' >
+          <div className='_card padding-20 width-500-max center' >
           <div className="">
         <div className="padding">
         <Typography
