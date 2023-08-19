@@ -73,7 +73,7 @@ export default function Home() {
       { info &&
         <Alert message={message} fixed="top-middle" type="info" />
       }
-      <div className='card round-edge padding-20' style={{ 
+      <div className='_card' style={{ 
         maxWidth:'400px',
         width:"100%"
       }}>

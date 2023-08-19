@@ -280,7 +280,7 @@ onClick={HandleDelete}
             </div>
          
       </div>
-      <Div funcss="card text-small round-edge margin-top-30">
+      <Div funcss="_card text-small margin-top-30">
       <div className="padding hr">
       <RowFlex justify='space-between'>
       <Input rounded label="Email" onChange={(e)=>setsearch(e.target.value)} bordered />

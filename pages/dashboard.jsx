@@ -145,14 +145,14 @@ seteditModal(true)
      <div className="width-800-max center">
      <Grid gap>
 <Col sm={12} md={6} lg={6} >
-       <div className="card round-edge padding-20">
+       <div className="_card padding-20">
         <Typography italic size='small' color='primary'>Total Students</Typography> 
  <div />
  <Typography size='bigger' color='secondary'>{students ? students.length : ''}</Typography>
         </div>
         </Col>
 <Col sm={12} md={6} lg={6} >
-       <div className="card round-edge padding-20">
+       <div className="_card padding-20">
         <Typography italic size='small' color='primary'>Total Logs</Typography> 
  <div />
  <Typography size='bigger' color='secondary'>{logs ? logs.length : ''}</Typography>

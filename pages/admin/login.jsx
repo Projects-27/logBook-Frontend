@@ -76,7 +76,7 @@ export default function Home() {
         loading ?
         <FunLoader size='65px' fixed/>:''
       }
-      <div  className='card round-edge padding-20' style={{ 
+      <div  className='_card padding-20' style={{ 
         maxWidth:'400px',
         width:"100%"
       }}>

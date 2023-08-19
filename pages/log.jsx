@@ -27,9 +27,12 @@ import TableHead from 'funuicss/component/TableHead'
 import TableData from 'funuicss/component/TableData'
 import TableRow from 'funuicss/component/TableRow'
 import FunLoader from 'funuicss/component/FunLoader';
-
+import db from '../Functions/config'
+import ProgressBar from 'funuicss/component/ProgressBar'
+import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 
 export default function Log() {
+  const storage = getStorage()
     const [modal2, setmodal2] = useState(false);
     const [me, setme] = useState('')
     const [loading, setloading] = useState(false)
@@ -43,6 +46,8 @@ export default function Log() {
     const [updateDoc, setupdateDoc] = useState(false)
     const [update, setupdate] = useState(false)
     const [filterLevel, setfilterLevel] = useState("")
+    const [uploadState, setuploadState] = useState(0)
+    const [document, setdocument] = useState('')
 
     useEffect(() => {
      if(!logs && me){
@@ -93,12 +98,14 @@ const data = {
     matric_number:me.MatrixNumber,
     title:title,
     supervisor_email:me.internal_supervisor.Email,
-    level:me.Level
+    level:me.Level ,
+    documents:document
 }
 const udata = {
     Date: date,
     Activity: activity,
     title:title,
+    documents:document
 }
 
 if(date && activity){
@@ -166,6 +173,35 @@ const HandlePrint = ()=>{
   
 }
 
+
+const handleDocument = (e)=>{
+  const file = e.target.files[0];
+  const storageRef = ref(storage, `recipes/${file.name}`);
+  const uploadTask = uploadBytesResumable(storageRef, file);
+  uploadTask.on('state_changed', 
+      (snapshot) => {
+      // Observe state change events such as progress, pause, and resume
+      // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+      const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+      const number = parseInt(progress)
+      setuploadState(number)
+      }, 
+      (error) => {
+      // Handle unsuccessful uploads
+      console.log(error.message)
+      }, 
+      () => {
+      getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+          setdocument(downloadURL)
+          setuploadState("")
+      });
+      }
+  );
+
+  
+  
+          
+  }
   return (
     <div className='content'>
           {
@@ -188,7 +224,40 @@ maxWidth="900px"
 </ModalHeader>
 <ModalContent>
 <div className="width-500-max center">
-<Input label="Title" defaultValue={ updateDoc ? updateDoc.title : ''} type='text' bordered fullWidth funcss="title" />
+<Input 
+onChange={handleDocument}
+    file 
+    label="Upload Document: JPG, PNG, PDF, DOCX"
+    icon={<Icon 
+     icon="fas fa-cloud-upload-alt" 
+     color={"gradient" } 
+     size={"big"}
+     />
+   }
+   noBorder
+   button={<Button bg="light" fullWidth rounded>New File</Button>}
+     />
+ {
+  uploadState > 0 ?
+  <div className="">
+  <ProgressBar 
+progress={uploadState} 
+content={`${uploadState}%`} 
+bg="success" 
+funcss='border'
+/>
+  </div>:''
+ }
+ {
+  document ? 
+ <div className="section text-center text-primary">
+   <Link href={document} >
+   <i className='bx bx-download' /> Download document
+  </Link>
+ </div>
+  :''
+ }
+<Input label="Title" defaultValue={ updateDoc ? updateDoc.title : ''} type='text' bordered fullWidth funcss="title margin-top-30" />
 <Section />
 <Input label="Date" type='date' bordered fullWidth funcss="date" defaultValue={ updateDoc ? updateDoc.Date : ''}  />
 <Section />
@@ -296,7 +365,7 @@ maxWidth="900px"
             </div>
          
       </div>
-      <Div funcss="card text-small round-edge margin-top-30">
+      <Div funcss="_card text-small  margin-top-30">
       <div className="padding hr">
       <RowFlex justify='space-between' responsiveSmall gap="0.5rem">
       <Input label="Matric Number" onChange={(e)=>setsearch(e.target.value)} bordered rounded/>
@@ -378,6 +447,7 @@ maxWidth="900px"
            <TableData className='text-bold'>Title</TableData>
            <TableData className='text-bold'>Level</TableData>
            <TableData className='text-bold'>Date</TableData>
+           <TableData className='text-bold'>Document</TableData>
            <TableData className='text-bold'>Edit</TableData>
        </TableHead>
     <tbody>
@@ -398,6 +468,15 @@ maxWidth="900px"
         <TableData>{doc.level}</TableData>
         <TableData>{doc.Date}</TableData>
         <TableData>
+        {doc.documents ? 
+        <Link href={doc.documents} >
+           <Button bg='primary' small rounded startIcon={<Icon icon="bx bx-download"  />}
+          >Download</Button>
+        </Link>
+        : <div className="text-small text-italic">No document</div>
+        }
+        </TableData>
+        <TableData>
           <Button bg='light' small rounded startIcon={<Icon icon="fas fa-eye"  />}
           onClick={()=>HandleModal(doc)}
           >View</Button>
@@ -410,6 +489,7 @@ maxWidth="900px"
         <Button onClick={()=>{
           setupdate(true)
           setupdateDoc(doc)
+          setdocument(doc.documents ? doc.documents : '')
           setmodal2(true)
         }} bg='light-success' small rounded  startIcon={<Icon icon="far fa-edit"  />}>Update</Button>
         </>
