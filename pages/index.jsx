@@ -50,7 +50,11 @@ export default function Home() {
       setloading(false)
      }else{
       localStorage.setItem('user', JSON.stringify(data.data));
-       window.location.href="/user";
+      if(data.data.role){
+        window.location.href="/dashboard";
+      }else{
+        window.location.href="/user";
+      }
      }
     })
     .catch(err=>{
