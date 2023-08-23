@@ -179,7 +179,7 @@ export default function Register() {
             <Input defaultValue={me.Level} rounded bordered type="text" label="Level" funcss="level" fullWidth />
             </div>
             <div className="col sm-12 md-12 lg-12 padding">
-            <select className="input borderedInput department fit" fullWidth style={{borderRadius:'3rem'}}>
+            <select defaultValue={me.Department} className="input borderedInput department fit" fullWidth style={{borderRadius:'3rem'}}>
       <option value="" disabled selected>Select Faculty</option>
   <option value="Agriculture and Natural Resources">Agriculture and Natural Resources</option>
   <option value="Applied Arts">Applied Arts</option>
