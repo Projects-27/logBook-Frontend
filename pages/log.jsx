@@ -27,6 +27,7 @@ import TableHead from 'funuicss/component/TableHead'
 import TableData from 'funuicss/component/TableData'
 import TableRow from 'funuicss/component/TableRow'
 import FunLoader from 'funuicss/component/FunLoader';
+import Circle from 'funuicss/component/Circle';
 import db from '../Functions/config'
 import ProgressBar from 'funuicss/component/ProgressBar'
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
@@ -99,7 +100,8 @@ const data = {
     title:title,
     supervisor_email:me.internal_supervisor.Email,
     level:me.Level ,
-    documents:document
+    documents:document ,
+    approval:false
 }
 const udata = {
     Date: date,
@@ -201,6 +203,26 @@ const handleDocument = (e)=>{
   
   
           
+  }
+
+  const HandleApprove = (_id) => {
+    if(me.role == 'supervisor'){
+      setloading(true)
+      FunRequest.post(EndPoint + '/log/approval/' + _id)
+      .then( (res) => {
+        if(res.status == 'ok'){
+          setlogs('')
+          setinfo(true)
+          setmessage("Approved Successfully")
+          setloading(false)
+
+        }
+      } )
+      .catch(err =>{ 
+        console.log(err)
+        setloading(false)
+      } )
+    }
   }
   return (
     <div className='content'>
@@ -370,12 +392,14 @@ maxWidth="900px"
       <RowFlex justify='space-between' responsiveSmall gap="0.5rem">
       <Input label="Matric Number" onChange={(e)=>setsearch(e.target.value)} bordered rounded/>
       <Input  onChange={(e)=>{
+     if(e.target.value){
       new Promise((resolve, reject) => {
         setroute(me.isAdmin ? `/supervisor/logs/${me.Email}/${e.target.value}` : `/student/logs/${me.MatrixNumber}/${e.target.value}`)
      resolve()
       }).then(()=>{
         setlogs("")
       })
+     }
       }} bordered rounded
       select 
       options={[
@@ -401,6 +425,7 @@ maxWidth="900px"
        ]}
       />
     
+
       <div>
  
    
@@ -449,6 +474,7 @@ maxWidth="900px"
            <TableData className='text-bold'>Date</TableData>
            <TableData className='text-bold'>Document</TableData>
            <TableData className='text-bold'>Edit</TableData>
+           <TableData className='text-bold'>Verify</TableData>
        </TableHead>
     <tbody>
     {
@@ -462,7 +488,7 @@ maxWidth="900px"
       })
       .map(doc=>(
         <TableRow key={doc.id}>
-          <TableData>{doc.supervisor_email}</TableData>
+          <TableData>{doc.supervisor_email.slice(0 , doc.supervisor_email.indexOf("@"))}</TableData>
         <TableData>{doc.matric_number ? doc.matric_number : ''}</TableData>
         <TableData>{doc.title.slice(0, doc.title.indexOf('.'))}</TableData>
         <TableData>{doc.level}</TableData>
@@ -494,6 +520,13 @@ maxWidth="900px"
         }} bg='light-success' small rounded  startIcon={<Icon icon="far fa-edit"  />}>Update</Button>
         </>
        }
+        </TableData>
+        <TableData>
+        <div onClick={()=> HandleApprove(doc.id)}>
+        <Circle funcss={`${doc.approval ? 'success' : 'warning'}`} size='30px'>
+            <i className={doc.approval ? 'bx bx-check' : 'bx bx-x'} /> 
+          </Circle>
+        </div>
         </TableData>
     </TableRow>
       ))
