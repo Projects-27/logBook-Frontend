@@ -1,3 +1,4 @@
+'use client'
 import React from 'react'
 import Nav from '../components/Nav'
 import BreadCrumb from 'funuicss/component/BreadCrumb'
@@ -31,6 +32,7 @@ import Circle from 'funuicss/component/Circle';
 import db from '../Functions/config'
 import ProgressBar from 'funuicss/component/ProgressBar'
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import { useRef } from 'react';
 
 export default function Log() {
   const storage = getStorage()
@@ -158,22 +160,7 @@ seteditDoc(doc)
 seteditModal(true)
 }
 
-const HandlePrint = ()=>{
-  const myElement = document.getElementById('documents');
-  printElement(myElement);
-  function printElement(element) {
-      const originalContents = document.body.innerHTML;
-      const printContents = element.innerHTML;
 
-      document.body.innerHTML = printContents;
-      window.print();
-
-      document.body.innerHTML = originalContents;
-
-
-  }
-  
-}
 
 
 const handleDocument = (e)=>{
@@ -224,6 +211,28 @@ const handleDocument = (e)=>{
       } )
     }
   }
+
+  const documentsRef = useRef(null);
+
+  const handlePrint = () => {
+    new Promise((resolve, reject) => {
+      if (documentsRef.current) {
+        const printContents = documentsRef.current.innerHTML;
+        
+        // Create a new window for printing
+        const printWindow = window.open('', '_blank');
+        
+        // Set the content of the new window to the print contents
+        printWindow.document.body.innerHTML = printContents;
+        
+        // Print the content
+        printWindow.print();
+        resolve()
+      }
+    })
+    .then( () => window.location.reload() )
+  };
+
   return (
     <div className='content'>
           {
@@ -436,7 +445,7 @@ maxWidth="900px"
       outlined
       rounded
       startIcon={<Icon icon='fas fa-print' />}
-      onClick={HandlePrint}
+      onClick={() => handlePrint() }
       />
       <div>
       <Typography
@@ -464,7 +473,7 @@ maxWidth="900px"
       </div>
       </RowFlex>
       </div>
-     <div id="documents">
+     <div id="documents" ref={documentsRef}>
      <Table  stripped >
        <TableHead>
            <TableData className='text-bold'>Supervisor</TableData>
